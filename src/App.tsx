@@ -68,21 +68,6 @@ function App() {
   }, []);
 
   const layers = [
-    // new GeoJsonLayer({
-    //   id: 'footprints',
-    //   data: buildings,
-    //   getFillColor: [130, 200, 230],
-    //   pickable: true,
-    //   onHover: (e) => {
-    //     setIsInformationShown(true);
-
-    //     setXCoordinate(e.x + 10);
-    //     setYCoordinate(e.y + 10);
-    //     if (e.object?.properties !== undefined) {
-    //       setBuildingInfo(e.object?.properties);
-    //     }
-    //   },
-    // }),
     new GeoJsonLayer({
       id: 'permits',
       data: buildingPermits,
@@ -90,13 +75,9 @@ function App() {
       getPointRadius: 60,
       pickable: true,
       onClick: (e) => {
-        console.log(e.object);
         setIsInformationShown(true);
         setXCoordinate(e.x + 10);
         setYCoordinate(e.y + 10);
-        if (e.object?.properties !== undefined) {
-          setPermitInfo(e.object?.properties);
-        }
       },
     }),
   ];
