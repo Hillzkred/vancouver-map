@@ -20,10 +20,11 @@ function App() {
     type: 'FeatureCollection',
     features: [],
   });
-  const [xCoordinate, setXCoordinate] = useState<number | null>(null);
-  const [yCoordinate, setYCoordinate] = useState<number | null>(null);
+  const [xCoordinate, setXCoordinate] = useState<number>(0);
+  const [yCoordinate, setYCoordinate] = useState<number>(0);
   const [isInformationShown, setIsInformationShown] = useState(false);
-  const [permitInfo, setPermitInfo] = useState({});
+  // const [permitInfo, setPermitInfo] = useState();
+
   useEffect(() => {
     document.oncontextmenu = () => false;
     const buildingPermits =
@@ -33,10 +34,6 @@ function App() {
       const data = (await res.json()) as BuildingPermits<
         string | BuildingPermitFeature[]
       >;
-
-      // const filteredData = data.results.map(
-      //   (item, index) => item[index] !== null
-      // );
 
       const feature: Feature[] = [];
       data.results
@@ -50,7 +47,6 @@ function App() {
             properties: {},
           };
           feature.push(featureObject);
-          console.log(item.geom);
         });
 
       console.log(feature);
@@ -92,20 +88,39 @@ function App() {
     bearing: 0,
   };
   return (
-    <DeckGL
-      getCursor={(cursor) => {
-        if (cursor.isHovering) {
-          return 'pointer';
-        } else {
-          return 'auto';
-        }
-      }}
-      layers={layers}
-      controller={true}
-      initialViewState={INITIAL_VIEW_STATE}
-    >
-      <Map mapLib={maplibregl} mapStyle={MAP_STYLE} />
-    </DeckGL>
+    <div>
+      <div
+        style={{ top: `${yCoordinate}px`, left: `${xCoordinate}px` }}
+        className={`${
+          isInformationShown ? '' : 'hidden'
+        } text-white p-5 absolute z-20 w-80 h-96 overflow-y-auto bg-gray-800`}
+      >
+        {/* {Object.entries(permitInfo).map(([key, value], index) => {
+          if (key !== 'geo_point_2d') {
+            return (
+              <div key={index}>
+                <p className='font-medium text-slate-400'>{key}:</p>
+                <p>{value as string}</p>
+              </div>
+            );
+          }
+        })} */}
+      </div>
+      <DeckGL
+        getCursor={(cursor) => {
+          if (cursor.isHovering) {
+            return 'pointer';
+          } else {
+            return 'auto';
+          }
+        }}
+        layers={layers}
+        controller={true}
+        initialViewState={INITIAL_VIEW_STATE}
+      >
+        <Map mapLib={maplibregl} mapStyle={MAP_STYLE} />
+      </DeckGL>
+    </div>
   );
 }
 
