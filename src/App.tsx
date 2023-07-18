@@ -5,7 +5,7 @@ import Map, {
   NavigationControl,
 } from 'react-map-gl/maplibre';
 import { MapboxOverlay, MapboxOverlayProps } from '@deck.gl/mapbox/typed';
-import maplibregl, { LngLat } from 'maplibre-gl';
+import maplibregl from 'maplibre-gl';
 import { useEffect, useState } from 'react';
 import { Feature, FeatureCollection } from 'geojson';
 import { GeoJsonLayer } from '@deck.gl/layers/typed';
@@ -31,10 +31,10 @@ function App() {
     type: 'FeatureCollection',
     features: [],
   });
-  const [popUpCoordinates, setPopupCoordinates] = useState<number[] | null>(
-    null
-  );
-  const [permitInfo, setPermitInfo] = useState(null);
+  const [popUpCoordinates, setPopupCoordinates] = useState<
+    number[] | undefined
+  >(undefined);
+  // const [permitInfo, setPermitInfo] = useState(null);
 
   useEffect(() => {
     document.oncontextmenu = () => false;
@@ -101,7 +101,7 @@ function App() {
         initialViewState={INITIAL_VIEW_STATE}
         mapStyle={MAP_STYLE}
       >
-        {popUpCoordinates && (
+        {popUpCoordinates !== undefined && (
           <div className='absolute z-20'>
             <Popup
               offset={10}
@@ -118,11 +118,13 @@ function App() {
         <DeckGLOverlay
           interleaved={true}
           onClick={(e) => {
-            const { object, coordinate } = e;
-            if (object) {
+            const { coordinate } = e;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const checker = e.object;
+            if (checker) {
               setPopupCoordinates(coordinate);
             } else {
-              setPopupCoordinates(null);
+              setPopupCoordinates(undefined);
             }
           }}
           getCursor={(cursor) => {
