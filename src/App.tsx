@@ -1,5 +1,10 @@
-import { DeckGL } from '@deck.gl/react/typed';
-import { Map } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import Map, {
+  Popup,
+  useControl,
+  NavigationControl,
+} from 'react-map-gl/maplibre';
+import { MapboxOverlay, MapboxOverlayProps } from '@deck.gl/mapbox/typed';
 import maplibregl from 'maplibre-gl';
 import { useEffect, useState } from 'react';
 import { Feature, FeatureCollection } from 'geojson';
@@ -15,15 +20,21 @@ type BuildingPermits<T> = {
   results: BuildingPermitFeature[];
 };
 
+function DeckGLOverlay(props: MapboxOverlayProps & { interleaved?: boolean }) {
+  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
+  overlay.setProps(props);
+  return null;
+}
+
 function App() {
   const [buildingPermits, setBuildingPermits] = useState<FeatureCollection>({
     type: 'FeatureCollection',
     features: [],
   });
-  const [xCoordinate, setXCoordinate] = useState<number>(0);
-  const [yCoordinate, setYCoordinate] = useState<number>(0);
-  const [isInformationShown, setIsInformationShown] = useState(false);
-  // const [permitInfo, setPermitInfo] = useState();
+  const [popUpCoordinates, setPopupCoordinates] = useState<
+    number[] | undefined
+  >(undefined);
+  // const [permitInfo, setPermitInfo] = useState(null);
 
   useEffect(() => {
     document.oncontextmenu = () => false;
@@ -49,8 +60,6 @@ function App() {
           feature.push(featureObject);
         });
 
-      console.log(feature);
-
       if (feature !== null) {
         setBuildingPermits((prev) => {
           return {
@@ -70,11 +79,6 @@ function App() {
       getFillColor: [130, 200, 100],
       getPointRadius: 60,
       pickable: true,
-      onClick: (e) => {
-        setIsInformationShown(true);
-        setXCoordinate(e.x + 10);
-        setYCoordinate(e.y + 10);
-      },
     }),
   ];
 
@@ -87,40 +91,87 @@ function App() {
     pitch: 0,
     bearing: 0,
   };
+
+  console.log(popUpCoordinates);
+
   return (
-    <div>
-      <div
-        style={{ top: `${yCoordinate}px`, left: `${xCoordinate}px` }}
-        className={`${
-          isInformationShown ? '' : 'hidden'
-        } text-white p-5 absolute z-20 w-80 h-96 overflow-y-auto bg-gray-800`}
-      >
-        {/* {Object.entries(permitInfo).map(([key, value], index) => {
-          if (key !== 'geo_point_2d') {
-            return (
-              <div key={index}>
-                <p className='font-medium text-slate-400'>{key}:</p>
-                <p>{value as string}</p>
-              </div>
-            );
-          }
-        })} */}
-      </div>
-      <DeckGL
-        getCursor={(cursor) => {
-          if (cursor.isHovering) {
-            return 'pointer';
-          } else {
-            return 'auto';
-          }
-        }}
-        layers={layers}
-        controller={true}
+    <div className='h-screen'>
+      <Map
+        mapLib={maplibregl}
         initialViewState={INITIAL_VIEW_STATE}
+        mapStyle={MAP_STYLE}
       >
-        <Map mapLib={maplibregl} mapStyle={MAP_STYLE} />
-      </DeckGL>
+        {popUpCoordinates !== undefined && (
+          <div className='absolute z-20'>
+            <Popup
+              offset={10}
+              longitude={popUpCoordinates[0]}
+              latitude={popUpCoordinates[1]}
+            >
+              <div className='h-52 w-40'>
+                <h1 className='text-3xl'>Popup info</h1>
+              </div>
+            </Popup>
+          </div>
+        )}
+        <NavigationControl />
+        <DeckGLOverlay
+          interleaved={true}
+          onClick={(e) => {
+            const { coordinate } = e;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const checker = e.object;
+            if (checker) {
+              setPopupCoordinates(coordinate);
+            } else {
+              setPopupCoordinates(undefined);
+            }
+          }}
+          getCursor={(cursor) => {
+            if (cursor.isHovering) {
+              return 'pointer';
+            } else {
+              return 'auto';
+            }
+          }}
+          layers={layers}
+        />
+      </Map>
     </div>
+
+    // <div>
+    //   <DeckGL
+    //     // style={{ overflowY: 'hidden' }}
+    //     onClick={(e) => {
+    //       const { object, coordinate } = e;
+    //       if (object) {
+    //         console.log(coordinate);
+    //         setPopupCoordinates(coordinate);
+    //         //coordinates are not valid lat long.
+    //         // setPermitInfo(object);
+    //       } else {
+    //         setPopupCoordinates(undefined);
+    //       }
+    //     }}
+    //     getCursor={(cursor) => {
+    //       if (cursor.isHovering) {
+    //         return 'pointer';
+    //       } else {
+    //         return 'auto';
+    //       }
+    //     }}
+    //     layers={layers}
+    //     controller={true}
+    //     initialViewState={INITIAL_VIEW_STATE}
+    //   >
+    //     {popUpCoordinates && (
+    //       <Popup longitude={popUpCoordinates[0]} latitude={popUpCoordinates[1]}>
+    //         <h1>Hello</h1>
+    //       </Popup>
+    //     )}
+    //     <Map mapLib={maplibregl} mapStyle={MAP_STYLE} />
+    //   </DeckGL>
+    // </div>
   );
 }
 
