@@ -96,24 +96,19 @@ function App() {
 
   return (
     <div className='h-screen'>
+      {popUpCoordinates !== undefined && (
+        <div className='absolute z-20 top-0 left-0 bg-yellow-300'>
+          <div className='text-2xl text-blue-500 p-3'>
+            <p>longitude: {popUpCoordinates[0]}</p>
+            <p>latitude: {popUpCoordinates[1]}</p>
+          </div>
+        </div>
+      )}
       <Map
         mapLib={maplibregl}
         initialViewState={INITIAL_VIEW_STATE}
         mapStyle={MAP_STYLE}
       >
-        {popUpCoordinates !== undefined && (
-          <div className='absolute z-20'>
-            <Popup
-              offset={10}
-              longitude={popUpCoordinates[0]}
-              latitude={popUpCoordinates[1]}
-            >
-              <div className='h-52 w-40'>
-                <h1 className='text-3xl'>Popup info</h1>
-              </div>
-            </Popup>
-          </div>
-        )}
         <NavigationControl />
         <DeckGLOverlay
           interleaved={true}
