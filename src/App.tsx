@@ -1,9 +1,5 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, {
-  Popup,
-  useControl,
-  NavigationControl,
-} from 'react-map-gl/maplibre';
+import Map, { useControl, NavigationControl } from 'react-map-gl/maplibre';
 import { MapboxOverlay, MapboxOverlayProps } from '@deck.gl/mapbox/typed';
 import maplibregl from 'maplibre-gl';
 import { useEffect, useState } from 'react';
