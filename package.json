@@ -16,6 +16,7 @@
     "@deck.gl/react": "^8.9.19",
     "@loaders.gl/core": "^3.4.4",
     "@loaders.gl/i3s": "^3.4.4",
+    "@loaders.gl/json": "^3.4.8",
     "@loaders.gl/las": "^3.4.6",
     "@loaders.gl/shapefile": "^3.4.4",
     "@types/geojson": "^7946.0.10",
