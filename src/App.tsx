@@ -5,9 +5,9 @@ import maplibregl from 'maplibre-gl';
 import { useEffect, useState } from 'react';
 import type { Feature, FeatureCollection } from 'geojson';
 import { GeoJsonLayer } from '@deck.gl/layers/typed';
-// Makes JSON.parse return unknown
+import { loadInBatches } from '@loaders.gl/core';
+import { _GeoJSONLoader } from '@loaders.gl/json';
 import '@total-typescript/ts-reset/json-parse';
-// Makes await fetch().then(res => res.json()) return unknown
 import '@total-typescript/ts-reset/fetch';
 
 type BuildingPermitFeature = {
@@ -48,31 +48,60 @@ function App() {
       features: [],
     });
 
-  const [buildingHeight, setBuildingHeight] = useState<FeatureCollection>({
+  const [featureArrayForDecoy, setFeatureArrayForDecoy] = useState<Feature[]>(
+    []
+  );
+
+  const decoyBuildingHeights = {
     type: 'FeatureCollection',
-    features: [],
-  });
+    features: featureArrayForDecoy,
+  };
+
+  const [completeBuildingHeight, setCompleteBuildingHeight] =
+    useState<FeatureCollection>();
+
   const [popUpCoordinates, setPopupCoordinates] = useState<
     number[] | undefined
   >(undefined);
 
+  const buildingPermitsData =
+    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100';
+
+  const buildingFootprintsAPI =
+    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
+
+  const buildingHeightData =
+    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2009/exports/geojson';
+
   useEffect(() => {
     document.oncontextmenu = () => false;
-    const buildingPermits =
-      'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100';
-
-    const buildingFootprintsAPI =
-      'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
-
-    const buildingHeight =
-      'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2009/exports/geojson';
     async function getBuildingHeight() {
-      const res = await fetch(buildingHeight);
+      // const batches = await loadInBatches(buildingHeightData, _GeoJSONLoader);
+      // for await (const batch of batches) {
+      //   setFeatureArray((prev) => {
+      //     return [...prev, ...batch.data] as Feature[];
+      //   });
+      // }
+      const res = await fetch(buildingHeightData);
       const data = (await res.json()) as FeatureCollection;
-      setBuildingHeight(data);
+      setCompleteBuildingHeight(data);
     }
 
     void getBuildingHeight();
+
+    async function loadDecoyBuildingHeights() {
+      const batches = await loadInBatches(buildingHeightData, _GeoJSONLoader);
+      for await (const batch of batches) {
+        setFeatureArrayForDecoy((prev) => {
+          return [...prev, ...batch.data] as Feature[];
+        });
+        if (completeBuildingHeight !== undefined) {
+          break;
+        }
+      }
+    }
+
+    void loadDecoyBuildingHeights();
 
     async function getBuildingFootprints() {
       // const features: Feature[] = [];
@@ -88,7 +117,7 @@ function App() {
     void getBuildingFootprints();
 
     async function getPermitData() {
-      const res = await fetch(buildingPermits);
+      const res = await fetch(buildingPermitsData);
       const data = (await res.json()) as BuildingPermits<
         string | BuildingPermitFeature[]
       >;
@@ -119,10 +148,15 @@ function App() {
     void getPermitData();
   }, []);
 
+  console.log(completeBuildingHeight);
+
   const layers = [
     new GeoJsonLayer({
       id: 'building-height',
-      data: buildingHeight,
+      data:
+        completeBuildingHeight !== undefined
+          ? completeBuildingHeight
+          : decoyBuildingHeights,
       getFillColor: (e) => {
         const height = e.properties as BuildingHeight;
         if (height.hgt_agl < 6) {
