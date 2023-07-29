@@ -67,8 +67,8 @@ function App() {
   const buildingPermitsData =
     'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100';
 
-  const buildingFootprintsAPI =
-    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
+  // const buildingFootprintsAPI =
+  //   'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
 
   const buildingHeightData =
     'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2009/exports/geojson';
