@@ -42,11 +42,11 @@ function App() {
     type: 'FeatureCollection',
     features: [],
   });
-  const [buildingFootprints, setBuildingFootprints] =
-    useState<FeatureCollection>({
-      type: 'FeatureCollection',
-      features: [],
-    });
+  // const [buildingFootprints, setBuildingFootprints] =
+  //   useState<FeatureCollection>({
+  //     type: 'FeatureCollection',
+  //     features: [],
+  //   });
 
   const [featureArrayForDecoy, setFeatureArrayForDecoy] = useState<Feature[]>(
     []
@@ -67,8 +67,8 @@ function App() {
   const buildingPermitsData =
     'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100';
 
-  const buildingFootprintsAPI =
-    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
+  // const buildingFootprintsAPI =
+  //   'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2015/exports/geojson';
 
   const buildingHeightData =
     'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/building-footprints-2009/exports/geojson';
@@ -103,18 +103,18 @@ function App() {
 
     void loadDecoyBuildingHeights();
 
-    async function getBuildingFootprints() {
-      // const features: Feature[] = [];
-      const res = await fetch(buildingFootprintsAPI);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = (await res.json()) as FeatureCollection;
-      // const filteredData: FeatureCollection = data.links.filter((item) => {
-      //   return item.rel === 'geojson';
-      // });
-      setBuildingFootprints(data);
-    }
+    // async function getBuildingFootprints() {
+    // const features: Feature[] = [];
+    // const res = await fetch(buildingFootprintsAPI);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // const data = (await res.json()) as FeatureCollection;
+    // const filteredData: FeatureCollection = data.links.filter((item) => {
+    //   return item.rel === 'geojson';
+    // });
+    // setBuildingFootprints(data);
+    // }
 
-    void getBuildingFootprints();
+    // void getBuildingFootprints();
 
     async function getPermitData() {
       const res = await fetch(buildingPermitsData);
@@ -148,8 +148,6 @@ function App() {
     void getPermitData();
   }, []);
 
-  console.log(completeBuildingHeight);
-
   const layers = [
     new GeoJsonLayer({
       id: 'building-height',
@@ -182,14 +180,14 @@ function App() {
       autoHighlight: true,
       highlightColor: [0, 50, 90],
     }),
-    new GeoJsonLayer({
-      id: 'building-footprints',
-      data: buildingFootprints,
-      getFillColor: [252, 232, 3],
-      getLineWidth: 0,
-      opacity: 0.5,
-      pickable: true,
-    }),
+    // new GeoJsonLayer({
+    //   id: 'building-footprints',
+    //   data: buildingFootprints,
+    //   getFillColor: [252, 232, 3],
+    //   getLineWidth: 0,
+    //   opacity: 0.5,
+    //   pickable: true,
+    // }),
     new GeoJsonLayer({
       id: 'permits',
       data: buildingPermits,
