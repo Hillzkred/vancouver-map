@@ -42,11 +42,11 @@ function App() {
     type: 'FeatureCollection',
     features: [],
   });
-  const [buildingFootprints, setBuildingFootprints] =
-    useState<FeatureCollection>({
-      type: 'FeatureCollection',
-      features: [],
-    });
+  // const [buildingFootprints, setBuildingFootprints] =
+  //   useState<FeatureCollection>({
+  //     type: 'FeatureCollection',
+  //     features: [],
+  //   });
 
   const [featureArrayForDecoy, setFeatureArrayForDecoy] = useState<Feature[]>(
     []
@@ -103,18 +103,18 @@ function App() {
 
     void loadDecoyBuildingHeights();
 
-    async function getBuildingFootprints() {
-      // const features: Feature[] = [];
-      const res = await fetch(buildingFootprintsAPI);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = (await res.json()) as FeatureCollection;
-      // const filteredData: FeatureCollection = data.links.filter((item) => {
-      //   return item.rel === 'geojson';
-      // });
-      setBuildingFootprints(data);
-    }
+    // async function getBuildingFootprints() {
+    // const features: Feature[] = [];
+    // const res = await fetch(buildingFootprintsAPI);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // const data = (await res.json()) as FeatureCollection;
+    // const filteredData: FeatureCollection = data.links.filter((item) => {
+    //   return item.rel === 'geojson';
+    // });
+    // setBuildingFootprints(data);
+    // }
 
-    void getBuildingFootprints();
+    // void getBuildingFootprints();
 
     async function getPermitData() {
       const res = await fetch(buildingPermitsData);
@@ -147,8 +147,6 @@ function App() {
     }
     void getPermitData();
   }, []);
-
-  console.log(completeBuildingHeight);
 
   const layers = [
     new GeoJsonLayer({
