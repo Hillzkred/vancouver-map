@@ -182,14 +182,14 @@ function App() {
       autoHighlight: true,
       highlightColor: [0, 50, 90],
     }),
-    new GeoJsonLayer({
-      id: 'building-footprints',
-      data: buildingFootprints,
-      getFillColor: [252, 232, 3],
-      getLineWidth: 0,
-      opacity: 0.5,
-      pickable: true,
-    }),
+    // new GeoJsonLayer({
+    //   id: 'building-footprints',
+    //   data: buildingFootprints,
+    //   getFillColor: [252, 232, 3],
+    //   getLineWidth: 0,
+    //   opacity: 0.5,
+    //   pickable: true,
+    // }),
     new GeoJsonLayer({
       id: 'permits',
       data: buildingPermits,
