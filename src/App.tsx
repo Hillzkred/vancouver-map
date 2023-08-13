@@ -205,15 +205,15 @@ function App() {
   return (
     <div className="h-screen">
       {popUpCoordinates !== undefined && (
-        <div className="absolute z-20 top-0 left-0 bg-yellow-300">
-          <div className="text-2xl text-blue-500 p-3">
+        <div className="absolute z-20 top-5 left-5 bg-yellow-300/90 rounded-lg">
+          <div className="text-2xl text-blue-600 p-3">
             <p>longitude: {popUpCoordinates[0]}</p>
             <p>latitude: {popUpCoordinates[1]}</p>
           </div>
         </div>
       )}
       {isWindowOpen && (
-        <div className="absolute z-20 top-24 bg-yellow-200">
+        <div className="absolute z-20 top-32 left-5 bg-yellow-200/90 rounded-lg">
           <div className="text-2xl text-blue-600 p-3">
             <p>Height: {displayedHeight} metres</p>
           </div>
