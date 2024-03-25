@@ -1,5 +1,5 @@
 import "maplibre-gl/dist/maplibre-gl.css";
-import Map, { useControl, NavigationControl } from "react-map-gl/maplibre";
+import Map, { useControl, NavigationControl, Source, Layer } from "react-map-gl/maplibre";
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
 import maplibregl from "maplibre-gl";
 import { useEffect, useState } from "react";
@@ -73,6 +73,22 @@ function App() {
 
   useEffect(() => {
     document.oncontextmenu = () => false;
+
+    // fetch("https://opendata.vancouver.ca/api/explore/v2.1/catalog/exports")
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     const fetchedJson = data.links.find((obj) => obj.rel === "json");
+    //     json = fetchedJson.href;
+    //   })
+    //   .catch((err) => console.log(err));
+
+    // if (json) {
+    //   console.log(json);
+    //   fetch(json)
+    //     .then((res) => res.json())
+    //     .then((data) => console.log(data))
+    //     .catch((err) => console.log(err));
+    // }
     async function getBuildingHeight() {
       // const batches = await loadInBatches(buildingHeightData, _GeoJSONLoader);
       // for await (const batch of batches) {
