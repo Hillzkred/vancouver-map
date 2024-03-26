@@ -4,32 +4,11 @@ import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
 import maplibregl from "maplibre-gl";
 import { useEffect, useState } from "react";
 import type { Feature, FeatureCollection } from "geojson";
-import { GeoJsonLayer } from "@deck.gl/layers/typed";
 import { loadInBatches } from "@loaders.gl/core";
 import { _GeoJSONLoader } from "@loaders.gl/json";
 import "@total-typescript/ts-reset/json-parse";
 import "@total-typescript/ts-reset/fetch";
-
-type BuildingPermitFeature = {
-  [key: string]: string | Feature;
-  geom: Feature;
-};
-
-type BuildingHeight = {
-  [key: string]: string | number;
-  hgt_agl: number;
-};
-
-type ObjProp = {
-  object: {
-    properties: BuildingHeight;
-  };
-};
-
-type BuildingPermits<T> = {
-  [key: string]: T | BuildingPermitFeature[];
-  results: BuildingPermitFeature[];
-};
+import type { BuildingHeight, BuildingPermitFeature, BuildingPermits, ObjProp } from "./types/types";
 
 function DeckGLOverlay(props: MapboxOverlayProps & { interleaved?: boolean }) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -42,18 +21,6 @@ function App() {
     type: "FeatureCollection",
     features: [],
   });
-  // const [buildingFootprints, setBuildingFootprints] =
-  //   useState<FeatureCollection>({
-  //     type: 'FeatureCollection',
-  //     features: [],
-  //   });
-
-  const [featureArrayForDecoy, setFeatureArrayForDecoy] = useState<Feature[]>([]);
-
-  const decoyBuildingHeights = {
-    type: "FeatureCollection",
-    features: featureArrayForDecoy,
-  };
 
   const [completeBuildingHeight, setCompleteBuildingHeight] = useState<FeatureCollection>();
 
@@ -161,63 +128,6 @@ function App() {
     void getPermitData();
   }, []);
 
-  const layers = [
-    new GeoJsonLayer({
-      id: "building-height",
-      data: completeBuildingHeight !== undefined ? completeBuildingHeight : decoyBuildingHeights,
-      getFillColor: (e) => {
-        const height = e.properties as BuildingHeight;
-        if (height.hgt_agl < 6) {
-          return [3, 100, 150];
-        } else if (height.hgt_agl > 50) {
-          return [50, 230, 255];
-        }
-        return [5, 160, 200];
-      },
-      opacity: 0.8,
-      getLineWidth: 50,
-      pickable: true,
-      extruded: true,
-      getElevation: (e) => {
-        const height = e.properties as BuildingHeight;
-        return height.hgt_agl;
-      },
-      onClick: (e) => {
-        const heightInfo = e as ObjProp;
-        setIsWindowOpen(true);
-        const height = heightInfo.object.properties.hgt_agl;
-        setDisplayedHeight(height);
-        return;
-      },
-      autoHighlight: true,
-      highlightColor: [0, 50, 90],
-    }),
-    // new GeoJsonLayer({
-    //   id: 'building-footprints',
-    //   data: buildingFootprints,
-    //   getFillColor: [252, 232, 3],
-    //   getLineWidth: 0,
-    //   opacity: 0.5,
-    //   pickable: true,
-    // }),
-    new GeoJsonLayer({
-      id: "permits",
-      data: buildingPermits,
-      getFillColor: [130, 200, 100],
-      getPointRadius: 6,
-      pickable: true,
-    }),
-  ];
-
-  const MAP_STYLE = "https://api.maptiler.com/maps/basic-v2/style.json?key=ZDFWcNAeAKwpseiIpuuj";
-  const INITIAL_VIEW_STATE = {
-    longitude: -123.1207,
-    latitude: 49.2827,
-    zoom: 13,
-    pitch: 0,
-    bearing: 0,
-  };
-
   return (
     <div className="h-screen">
       {popUpCoordinates !== undefined && (
@@ -235,29 +145,14 @@ function App() {
           </div>
         </div>
       )}
-      <Map mapLib={maplibregl} initialViewState={INITIAL_VIEW_STATE} mapStyle={MAP_STYLE}>
+      <Map
+        mapLib={maplibregl}
+        initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 14, pitch: 60, bearing: -20 }}
+        mapStyle={"/map.json"}>
         <NavigationControl />
-        <DeckGLOverlay
-          interleaved={true}
-          onClick={(e) => {
-            const { coordinate } = e;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const checker = e.object;
-            if (checker) {
-              setPopupCoordinates(coordinate);
-            } else {
-              setPopupCoordinates(undefined);
-            }
-          }}
-          getCursor={(cursor) => {
-            if (cursor.isHovering) {
-              return "pointer";
-            } else {
-              return "auto";
-            }
-          }}
-          layers={layers}
-        />
+        {/* <Source>
+          <Layer />
+        </Source> */}
       </Map>
     </div>
   );
