@@ -5,6 +5,11 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "plugins": [{ "name": "next" }],
+    "esModuleInterop": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -12,14 +17,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src", "tailwind.config.js", "postcss.config.js", "reset.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "tailwind.config.ts", "postcss.config.js", "reset.d.ts", "./dist/types/**/*.ts", "./next-env.d.ts", "next.config.mjs"],
+  "exclude": ["./node_modules"],
 }

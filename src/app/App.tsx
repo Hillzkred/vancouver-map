@@ -1,20 +1,21 @@
+"use client";
+
 import "maplibre-gl/dist/maplibre-gl.css";
 import Map, { useControl, NavigationControl, Source, Layer } from "react-map-gl/maplibre";
-import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
+// import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
 import maplibregl from "maplibre-gl";
 import { useEffect, useState } from "react";
 import type { Feature, FeatureCollection } from "geojson";
 import { loadInBatches } from "@loaders.gl/core";
-import { _GeoJSONLoader } from "@loaders.gl/json";
 import "@total-typescript/ts-reset/json-parse";
 import "@total-typescript/ts-reset/fetch";
-import type { BuildingHeight, BuildingPermitFeature, BuildingPermits, ObjProp } from "./types/types";
+import type { BuildingHeight, BuildingPermitFeature, BuildingPermits, ObjProp } from "../types/types";
 
-function DeckGLOverlay(props: MapboxOverlayProps & { interleaved?: boolean }) {
-  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
-  overlay.setProps(props);
-  return null;
-}
+// function DeckGLOverlay(props: MapboxOverlayProps & { interleaved?: boolean }) {
+//   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
+//   overlay.setProps(props);
+//   return null;
+// }
 
 function App() {
   const [buildingPermits, setBuildingPermits] = useState<FeatureCollection>({
@@ -67,20 +68,20 @@ function App() {
 
     void getBuildingHeight();
 
-    async function loadDecoyBuildingHeights() {
-      const batches = await loadInBatches(buildingHeightData, _GeoJSONLoader);
-      for await (const batch of batches) {
-        setFeatureArrayForDecoy((prev) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          return [...prev, ...batch.data] as Feature[];
-        });
-        if (completeBuildingHeight !== undefined) {
-          break;
-        }
-      }
-    }
+    // async function loadDecoyBuildingHeights() {
+    //   const batches = await loadInBatches(buildingHeightData, _GeoJSONLoader);
+    //   for await (const batch of batches) {
+    //     setFeatureArrayForDecoy((prev) => {
+    //       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    //       return [...prev, ...batch.data] as Feature[];
+    //     });
+    //     if (completeBuildingHeight !== undefined) {
+    //       break;
+    //     }
+    //   }
+    // }
 
-    void loadDecoyBuildingHeights();
+    // void loadDecoyBuildingHeights();
 
     // async function getBuildingFootprints() {
     // const features: Feature[] = [];
@@ -126,31 +127,15 @@ function App() {
   }, []);
 
   return (
-    <div className="h-screen">
-      {popUpCoordinates !== undefined && (
-        <div className="absolute z-20 top-5 left-5 bg-yellow-300/90 rounded-lg">
-          <div className="text-2xl text-blue-600 p-3">
-            <p>longitude: {popUpCoordinates[0]}</p>
-            <p>latitude: {popUpCoordinates[1]}</p>
-          </div>
-        </div>
-      )}
-      {isWindowOpen && (
-        <div className="absolute z-20 top-32 left-5 bg-yellow-200/90 rounded-lg">
-          <div className="text-2xl text-blue-600 p-3">
-            <p>Height: {displayedHeight} metres</p>
-          </div>
-        </div>
-      )}
-      <Map
+    <div className="">
+      <h1>Hello</h1>
+      {/* <Map
+        style={{ width: 500, height: 500 }}
         mapLib={maplibregl}
         initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 14, pitch: 60, bearing: -20 }}
         mapStyle={"/map.json"}>
         <NavigationControl />
-        {/* <Source>
-          <Layer />
-        </Source> */}
-      </Map>
+      </Map> */}
     </div>
   );
 }
