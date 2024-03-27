@@ -4,30 +4,30 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import Map, { NavigationControl, Source, Layer, Popup } from "react-map-gl/maplibre";
 import { useState } from "react";
 import { GeoJsonProperties, type FeatureCollection, type Point } from "geojson";
+import { PermitInfo } from "@/types/types";
 
 function App({ data }: { data: FeatureCollection[] }) {
   const [cursor, setCursor] = useState("");
   const [properties, setProperties] = useState<{
     coordinates: { lng: number; lat: number };
-    data: GeoJsonProperties;
-  }>({ coordinates: { lng: 0, lat: 0 }, data: {} });
-  const [isPopupToggled, setIsPopupToggled] = useState(false);
+    permitInfo: Partial<PermitInfo>;
+  }>();
+  const [showPopup, setShowPopup] = useState(true);
 
   return (
     <div className="h-[100svh] w-[100svw]">
       <Map
         interactiveLayerIds={["point"]}
         onClick={(e) => {
+          const { features, lngLat } = e;
           const coordinates = e.lngLat;
-          if (e.features !== undefined) {
-            const { properties } = e.features[0];
+          if (features?.length && features[0] && Object.values(features[0].properties).length > 0) {
+            setShowPopup(true);
             setProperties({
-              data: properties,
-              coordinates: coordinates,
+              permitInfo: features[0].properties,
+              coordinates: lngLat,
             });
-            setIsPopupToggled(!isPopupToggled);
           }
-          console.log(e.features);
         }}
         onMouseLeave={() => {
           setCursor("auto");
@@ -40,10 +40,24 @@ function App({ data }: { data: FeatureCollection[] }) {
         mapStyle={"/map.json"}>
         <NavigationControl />
 
-        {isPopupToggled ? (
-          <Popup latitude={properties.coordinates.lat} longitude={properties.coordinates.lng}>
-            <div>
-              <p>{properties.data?.permitnumber}</p>
+        {showPopup && properties ? (
+          <Popup
+            closeOnClick={false}
+            onClose={() => setShowPopup(false)}
+            anchor="bottom"
+            offset={10}
+            latitude={properties.coordinates.lat}
+            longitude={properties.coordinates.lng}>
+            <div className="bg-gray-950/85 text-slate-50 p-7">
+              <h1 className="font-bold text-lg">{properties.permitInfo?.applicant}</h1>
+              <p className="text-sky-500 text-lg">{properties.permitInfo?.permitnumber}</p>
+              <div className="py-2" />
+              <p>{properties.permitInfo?.permitnumbercreateddate}</p>
+              <p className="text-slate-400">{properties.permitInfo?.address}</p>
+              <div className="py-2" />
+              <p className="text-slate-300 h-40 overflow-y-auto">
+                {properties.permitInfo?.projectdescription}
+              </p>
             </div>
           </Popup>
         ) : null}
@@ -56,8 +70,8 @@ function App({ data }: { data: FeatureCollection[] }) {
                 id="point"
                 type="circle"
                 paint={{
-                  "circle-color": "red",
-                  "circle-radius": 5,
+                  "circle-color": "#ed0024",
+                  "circle-radius": 7,
                 }}
               />
             </Source>

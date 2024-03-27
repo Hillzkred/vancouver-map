@@ -270,7 +270,7 @@
         "fill-opacity": {
           "stops": [
             [9, 0.25],
-            [16, 1]
+            [16, 0.4]
           ]
         },
         "fill-antialias": true
@@ -1547,6 +1547,7 @@
         "text-rotation-alignment": "map"
       },
       "paint": {
+        "icon-opacity": 0.5,
         "icon-color": "hsl(203, 78%, 34%)",
         "text-color": "hsl(203, 78%, 34%)",
         "text-halo-blur": 1,
@@ -1588,6 +1589,7 @@
         "symbol-placement": "point"
       },
       "paint": {
+        "icon-opacity": 0.5,
         "icon-color": "hsl(203, 78%, 34%)",
         "text-color": "hsl(203, 78%, 34%)",
         "text-opacity": ["step", ["zoom"], 0, 1, ["match", ["get", "class"], ["ocean"], 1, 0], 3, 1],
@@ -1778,6 +1780,7 @@
         "text-ignore-placement": false
       },
       "paint": {
+        "icon-opacity": 0.5,
         "icon-color": "hsl(0, 0%, 100%)",
         "text-color": "hsl(0, 0%, 100%)",
         "icon-halo-blur": 0.5,
@@ -2650,26 +2653,26 @@
           ["zoom"],
           0,
           14,
-          ["case", ["<=", ["get", "rank"], 20], 1, 0],
+          ["case", ["<=", ["get", "rank"], 20], 0.4, 0],
           15,
-          ["case", ["<=", ["get", "rank"], 99], 1, 0],
+          ["case", ["<=", ["get", "rank"], 99], 0.4, 0],
           16,
-          ["case", ["<=", ["get", "rank"], 499], 1, 0],
+          ["case", ["<=", ["get", "rank"], 499], 0.4, 0],
           17,
-          1
+          0.4
         ],
         "text-opacity": [
           "step",
           ["zoom"],
           0,
           14,
-          ["case", ["<=", ["get", "rank"], 20], 1, 0],
+          ["case", ["<=", ["get", "rank"], 20], 0.4, 0],
           15,
-          ["case", ["<=", ["get", "rank"], 99], 1, 0],
+          ["case", ["<=", ["get", "rank"], 99], 0.4, 0],
           16,
-          ["case", ["<=", ["get", "rank"], 499], 1, 0],
+          ["case", ["<=", ["get", "rank"], 499], 0.4, 0],
           17,
-          1
+          0.4
         ],
         "icon-halo-blur": ["interpolate", ["linear"], ["zoom"], 12, 1, 14, 0.8, 16, 0],
         "text-halo-blur": ["interpolate", ["linear"], ["zoom"], 12, 1, 14, 0.5, 16, 0],
@@ -2783,7 +2786,7 @@
             0
           ],
           18,
-          1
+          0.4
         ],
         "text-opacity": [
           "step",
@@ -2808,7 +2811,7 @@
               "terminal",
               "toll"
             ],
-            1,
+            0.4,
             0
           ],
           17,
@@ -2831,7 +2834,7 @@
               "terminal",
               "toll"
             ],
-            1,
+            0.4,
             0
           ],
           18,
@@ -2908,9 +2911,9 @@
           ["zoom"],
           0,
           14,
-          ["case", ["<=", ["get", "rank"], 10], 1, 0],
+          ["case", ["<=", ["get", "rank"], 10], 0.3, 0],
           15,
-          ["case", ["<=", ["get", "rank"], 99], 1, 0],
+          ["case", ["<=", ["get", "rank"], 99], 0.3, 0],
           16,
           1
         ],
@@ -2919,11 +2922,11 @@
           ["zoom"],
           0,
           14,
-          ["case", ["<=", ["get", "rank"], 10], 1, 0],
+          ["case", ["<=", ["get", "rank"], 10], 0.3, 0],
           15,
-          ["case", ["<=", ["get", "rank"], 99], 1, 0],
+          ["case", ["<=", ["get", "rank"], 99], 0.3, 0],
           16,
-          1
+          0.3
         ],
         "icon-halo-blur": 0.5,
         "text-halo-blur": 0.5,
@@ -3134,26 +3137,26 @@
           ["zoom"],
           0,
           12,
-          ["match", ["get", "subclass"], ["station"], 1, 0],
+          ["match", ["get", "subclass"], ["station"], 0.4, 0],
           14,
-          ["match", ["get", "subclass"], ["station", "subway", "tram_stop"], 1, 0],
+          ["match", ["get", "subclass"], ["station", "subway", "tram_stop"], 0.4, 0],
           16,
-          ["match", ["get", "subclass"], ["bus_stop", "station", "subway", "tram_stop"], 1, 0],
+          ["match", ["get", "subclass"], ["bus_stop", "station", "subway", "tram_stop"], 0.4, 0],
           17,
-          1
+          0.4
         ],
         "text-opacity": [
           "step",
           ["zoom"],
           0,
           12,
-          ["match", ["get", "subclass"], ["station"], 1, 0],
+          ["match", ["get", "subclass"], ["station"], 0.4, 0],
           14,
-          ["match", ["get", "subclass"], ["station", "subway", "tram_stop"], 1, 0],
+          ["match", ["get", "subclass"], ["station", "subway", "tram_stop"], 0.4, 0],
           16,
-          ["match", ["get", "subclass"], ["bus_stop", "station", "subway", "tram_stop"], 1, 0],
+          ["match", ["get", "subclass"], ["bus_stop", "station", "subway", "tram_stop"], 0.4, 0],
           17,
-          1
+          0.4
         ],
         "icon-halo-blur": ["interpolate", ["linear"], ["zoom"], 12, 1, 14, 0.8, 16, 0],
         "text-halo-blur": ["interpolate", ["linear"], ["zoom"], 12, 1, 14, 0.5, 16, 0],
