@@ -1380,9 +1380,9 @@
       "layout": { "visibility": "visible" },
       "paint": {
         "fill-extrusion-base": { "type": "identity", "property": "render_min_height" },
-        "fill-extrusion-color": "hsl(217, 47%, 51%)",
+        "fill-extrusion-color": "#252336",
         "fill-extrusion-height": { "type": "identity", "property": "render_height" },
-        "fill-extrusion-opacity": 0.4
+        "fill-extrusion-opacity": 0.8
       },
       "metadata": {},
       "filter": ["!has", "hide_3d"]
@@ -2901,8 +2901,8 @@
         "icon-allow-overlap": false
       },
       "paint": {
-        "icon-color": "hsl(82, 75%, 46%)",
-        "text-color": "hsl(82, 75%, 46%)",
+        "icon-color": "#9d99c2",
+        "text-color": "#9d99c2",
         "icon-opacity": [
           "step",
           ["zoom"],
@@ -3127,8 +3127,8 @@
         "text-line-height": 0.9
       },
       "paint": {
-        "icon-color": "hsl(208, 100%, 66%)",
-        "text-color": "hsl(208, 100%, 66%)",
+        "icon-color": "#9d99c2",
+        "text-color": "#9d99c2",
         "icon-opacity": [
           "step",
           ["zoom"],

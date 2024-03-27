@@ -7,55 +7,29 @@ import { GeoJsonProperties, type Feature, type FeatureCollection, type Point, Ge
 import { PermitInfo, Permits } from "../types/types";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
-type OptionalAccess = {
-  somePermitInfo?: PermitInfo;
-};
-
-type Properties<T extends OptionalAccess> = {
-  fields: T;
-  coordinates: { lat: number; lng: number };
-};
-
-function App({ data }: { data: PermitInfo[] }) {
-  const [featureCollection, setFeatureCollection] = useState<FeatureCollection[]>([]);
+function App({ data }: { data: FeatureCollection[] }) {
   const [cursor, setCursor] = useState("");
-  const [properties, setProperties] = useState<Properties<{ [name: string]: any }>>({
-    fields: {},
-    coordinates: { lat: 0, lng: 0 },
-  });
+  const [properties, setProperties] = useState<{
+    coordinates: { lng: number; lat: number };
+    data: GeoJsonProperties;
+  }>({ coordinates: { lng: 0, lat: 0 }, data: {} });
   const [isPopupToggled, setIsPopupToggled] = useState(false);
-
-  useEffect(() => {
-    setFeatureCollection((prev) => {
-      const result: Feature[] = data.map((item) => {
-        return {
-          id: item.permitnumber,
-          properties: item,
-          geometry: item.geom?.geometry ?? { coordinates: [0, 0], type: "Point" },
-          type: "Feature",
-        };
-      });
-
-      return [...prev, { type: "FeatureCollection", features: result }];
-    });
-  }, []);
 
   return (
     <div className="h-[100svh] w-[100svw]">
       <Map
-        interactiveLayerIds={["point", "building-3d"]}
+        interactiveLayerIds={["point"]}
         onClick={(e) => {
           const coordinates = e.lngLat;
           if (e.features !== undefined) {
             const { properties } = e.features[0];
-            setProperties((prev) => {
-              return {
-                fields: properties,
-                coordinates: coordinates,
-              };
+            setProperties({
+              data: properties,
+              coordinates: coordinates,
             });
-            setIsPopupToggled(true);
+            setIsPopupToggled(!isPopupToggled);
           }
+          console.log(e.features);
         }}
         onMouseLeave={() => {
           setCursor("auto");
@@ -67,18 +41,20 @@ function App({ data }: { data: PermitInfo[] }) {
         initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 14, pitch: 60, bearing: -20 }}
         mapStyle={"/map.json"}>
         <NavigationControl />
-        {featureCollection.map((layer, index) => {
+
+        {isPopupToggled ? (
+          <Popup latitude={properties.coordinates.lat} longitude={properties.coordinates.lng}>
+            <div>
+              <p>{properties.data?.permitnumber}</p>
+            </div>
+          </Popup>
+        ) : null}
+        {data.map((layer, index) => {
           return (
             <Source key={index} id="datasource" data={layer} type="geojson">
-              {isPopupToggled ? (
-                <Popup latitude={properties.coordinates.lat} longitude={properties.coordinates.lng}>
-                  <div>
-                    <p>{properties.fields.permitnumber}</p>
-                  </div>
-                </Popup>
-              ) : null}
               <Layer
                 key={index}
+                source="datasource"
                 id="point"
                 type="circle"
                 paint={{
