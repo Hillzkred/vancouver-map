@@ -3,17 +3,20 @@ import App from "./App";
 import { PermitInfo } from "@/types/types";
 import { Feature, FeatureCollection } from "geojson";
 
-export function generateStaticParams() {
-  return [{ slug: [""] }];
-}
-
 async function getData() {
   const buildingPermitsData = await fetch(
     "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100"
   );
 
-  const res: PermitInfo[] = await buildingPermitsData.json();
-  const result: Feature[] = res.map((item) => {
+  const res: { results: PermitInfo[] } = await buildingPermitsData.json();
+
+  return res;
+}
+
+export default async function Page() {
+  const data = await getData();
+
+  const result: Feature[] = data.results.map((item) => {
     return {
       id: item.permitnumber,
       properties: item,
@@ -23,11 +26,5 @@ async function getData() {
   });
   const featureCollection: FeatureCollection[] = [{ type: "FeatureCollection", features: result }];
 
-  return featureCollection;
-}
-
-export default async function Page() {
-  const data = await getData();
-
-  return <App data={data} />;
+  return <App data={featureCollection} />;
 }
