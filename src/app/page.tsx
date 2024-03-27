@@ -9,7 +9,7 @@ export function generateStaticParams() {
 
 async function getData() {
   const buildingPermitsData = await fetch(
-    "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/exports/json"
+    "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100"
   );
 
   const res: PermitInfo[] = await buildingPermitsData.json();
