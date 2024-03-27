@@ -36,7 +36,7 @@ function App({ data }: { data: FeatureCollection[] }) {
           setCursor("pointer");
         }}
         cursor={cursor}
-        initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 14, pitch: 60, bearing: -20 }}
+        initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 15, pitch: 60, bearing: -20 }}
         mapStyle={"/map.json"}>
         <NavigationControl />
 
