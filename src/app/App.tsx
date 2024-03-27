@@ -2,10 +2,8 @@
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import Map, { NavigationControl, Source, Layer, Popup } from "react-map-gl/maplibre";
-import { useEffect, useState } from "react";
-import { GeoJsonProperties, type Feature, type FeatureCollection, type Point, Geometry } from "geojson";
-import { PermitInfo, Permits } from "../types/types";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { GeoJsonProperties, type FeatureCollection, type Point } from "geojson";
 
 function App({ data }: { data: FeatureCollection[] }) {
   const [cursor, setCursor] = useState("");
