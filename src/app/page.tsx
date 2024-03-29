@@ -1,7 +1,7 @@
 import "./globals.css";
 import App from "./App";
 import { PermitInfo } from "@/types/types";
-import { Feature, FeatureCollection } from "geojson";
+import { Feature, FeatureCollection, Geometry, Point } from "geojson";
 
 async function getData() {
   const buildingPermitsData = await fetch(
@@ -16,15 +16,18 @@ async function getData() {
 export default async function Page() {
   const data = await getData();
 
-  const result: Feature[] = data.results.map((item) => {
+  const result: Feature<Point, PermitInfo>[] = data.results.map((item) => {
+    const geometry = item.geom.geometry as Point;
     return {
       id: item.permitnumber,
       properties: item,
-      geometry: item.geom?.geometry ?? { coordinates: [0, 0], type: "Point" },
+      geometry: geometry,
       type: "Feature",
     };
   });
-  const featureCollection: FeatureCollection[] = [{ type: "FeatureCollection", features: result }];
+  const featureCollection: FeatureCollection<Point, PermitInfo>[] = [
+    { type: "FeatureCollection", features: result },
+  ];
 
   return <App data={featureCollection} />;
 }
