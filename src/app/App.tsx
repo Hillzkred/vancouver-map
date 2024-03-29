@@ -24,42 +24,6 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
     permitInfo: Partial<PermitInfo>;
   }>();
   const [showPopup, setShowPopup] = useState(true);
-  // const [permitToShow, setPermitToShow] = useState("");
-  // const { current: map } = useMap();
-
-  /*
-  useEffect(() => {
-    let searchedProperty: Feature<Point, PermitInfo> | undefined;
-
-    data.map((d) => {
-      const permitFound = d.features.find(
-        (feature) => feature.properties.permitnumber === permitToShow
-      ) as Feature<Point, PermitInfo>;
-
-      if (permitFound) {
-        searchedProperty = permitFound;
-        return;
-      }
-    });
-
-    console.log(map);
-    if (searchedProperty && map) {
-      const lng = searchedProperty.geometry.coordinates[0];
-      const lat = searchedProperty.geometry.coordinates[1];
-      const coordinates = [lng, lat];
-      const lngLat = coordinates as LngLatLike;
-      map.flyTo({
-        center: lngLat,
-        zoom: 9,
-        speed: 0.2,
-        curve: 1,
-        easing(t) {
-          return t;
-        },
-      });
-    }
-  }, [permitToShow]);
-  */
 
   useEffect(() => {
     const permits: Pick<PermitInfo, "applicant" | "permitnumber" | "address">[] = [];
@@ -88,9 +52,6 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
     <div className="h-[100svh] w-[100svw]">
       <Map
         interactiveLayerIds={["point"]}
-        onLoad={() => {
-          console.log("triggered");
-        }}
         onClick={(e) => {
           const { features, lngLat } = e;
           const coordinates = e.lngLat;
@@ -145,6 +106,9 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
                 paint={{
                   "circle-color": "#ed0024",
                   "circle-radius": 7,
+                  "circle-stroke-width": 3,
+                  "circle-stroke-color": "cornsilk",
+                  "circle-stroke-opacity": 0.5,
                 }}
               />
             </Source>

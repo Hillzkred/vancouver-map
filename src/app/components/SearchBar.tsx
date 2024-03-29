@@ -54,12 +54,20 @@ export default function SearchBar({
       return null;
     }
   }
-  const handleClickSearch = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleActivateSearch = (e: MouseEvent<HTMLButtonElement>) => {
     setPermitToShow(e.currentTarget.name);
     setSearchInput("");
   };
 
   const filteredPermits = filterPermitLists(searchInput);
+
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && filteredPermits && filteredPermits[0]) {
+      setPermitToShow(filteredPermits[0].permitnumber);
+      setSearchInput("");
+    }
+  });
+
   return (
     <div className="absolute z-10 top-10 left-10">
       <div className="relative">
@@ -79,7 +87,7 @@ export default function SearchBar({
                 return (
                   <button
                     name={permit.permitnumber}
-                    onClick={handleClickSearch}
+                    onClick={handleActivateSearch}
                     className="p-1 w-full"
                     key={permit.permitnumber}>
                     <p className="font-bold">{permit.address}</p>
