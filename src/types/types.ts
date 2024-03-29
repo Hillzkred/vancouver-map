@@ -46,3 +46,5 @@ export type PermitInfo = {
 export type Permits = {
   results: PermitInfo[];
 };
+
+export type PermitLists = Pick<PermitInfo, "applicant" | "permitnumber" | "address">[];
