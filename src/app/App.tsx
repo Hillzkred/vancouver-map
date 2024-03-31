@@ -3,12 +3,12 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import Map, { NavigationControl, Source, Layer, Popup, MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { useEffect, useState } from "react";
-import { Feature, type FeatureCollection, type Point } from "geojson";
+import { type FeatureCollection, type Point } from "geojson";
 import { PermitInfo } from "@/types/types";
 import SearchBar from "./components/SearchBar";
 import { PermitLists } from "@/types/types";
 
-function App({ data }: { data: { results: PermitInfo[] } }) {
+function App({ geoJsonData }: { geoJsonData: FeatureCollection<Point, PermitInfo>[] }) {
   const [cursor, setCursor] = useState("");
   const [permitLists, setPermitLists] = useState<PermitLists>();
   const [popupPermitInfo, setPopupPermitInfo] = useState<{
@@ -16,25 +16,11 @@ function App({ data }: { data: { results: PermitInfo[] } }) {
     permitInfo: Partial<PermitInfo>;
   }>();
   const [showPopup, setShowPopup] = useState(true);
-  const [geoJsonData, setGeoJsonData] = useState<FeatureCollection<Point, PermitInfo>[]>([]);
 
   useEffect(() => {
     const permits: Pick<PermitInfo, "applicant" | "permitnumber" | "address">[] = [];
 
-    const features: Feature<Point, PermitInfo>[] = data.results.map((item) => {
-      return {
-        id: item.permitnumber,
-        properties: item,
-        geometry: item.geom.geometry,
-        type: "Feature",
-      };
-    });
-
-    const featureCollection: FeatureCollection<Point, PermitInfo>[] = [
-      { type: "FeatureCollection", features },
-    ];
-
-    featureCollection.map((item) => {
+    geoJsonData.map((item) => {
       item.features.map((feature) => {
         const { properties } = feature;
 
@@ -46,7 +32,6 @@ function App({ data }: { data: { results: PermitInfo[] } }) {
       });
     });
 
-    setGeoJsonData(featureCollection);
     setPermitLists(permits);
   }, []);
 

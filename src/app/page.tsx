@@ -16,5 +16,16 @@ async function getData() {
 export default async function Page() {
   const data = await getData();
 
-  return <App data={data} />;
+  const features: Feature<Point, PermitInfo>[] = data.results.map((item) => {
+    return {
+      id: item.permitnumber,
+      properties: item,
+      geometry: item.geom.geometry ? item.geom.geometry : { type: "Point", coordinates: [0, 0] },
+      type: "Feature",
+    };
+  });
+
+  const featureCollection: FeatureCollection<Point, PermitInfo>[] = [{ type: "FeatureCollection", features }];
+
+  return <App geoJsonData={featureCollection} />;
 }
