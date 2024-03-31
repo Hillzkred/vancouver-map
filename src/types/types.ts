@@ -1,4 +1,4 @@
-import { Feature } from "geojson";
+import { Feature, Point } from "geojson";
 export type BuildingPermitFeature = {
   [key: string]: string | Feature;
   geom: Feature;
@@ -28,7 +28,7 @@ export type PermitInfo = {
   buildingcontractoraddress: string | null;
   geo_point_2d: { lon: number; lat: number };
   geolocalarea: string;
-  geom: Feature;
+  geom: Feature<Point>;
   issuedate: string;
   issueyear: string;
   permitcategory: string | null;
