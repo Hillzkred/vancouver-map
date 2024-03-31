@@ -1,4 +1,5 @@
 import { Feature } from "geojson";
+import { Point } from "maplibre-gl";
 export type BuildingPermitFeature = {
   [key: string]: string | Feature;
   geom: Feature;
@@ -28,7 +29,7 @@ export type PermitInfo = {
   buildingcontractoraddress: string | null;
   geo_point_2d: { lon: number; lat: number };
   geolocalarea: string;
-  geom: Feature;
+  geom: Point;
   issuedate: string;
   issueyear: string;
   permitcategory: string | null;
