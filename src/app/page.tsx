@@ -17,12 +17,10 @@ export default async function Page() {
   const data = await getData();
 
   const result: Feature<Point, PermitInfo>[] = data.results.map((item) => {
-    const lat = item.geo_point_2d.lat;
-    const lng = item.geo_point_2d.lon;
     return {
       id: item.permitnumber,
       properties: item,
-      geometry: { coordinates: [lat, lng], type: "Point" },
+      geometry: item.geom.geometry,
       type: "Feature",
     };
   });
