@@ -17,7 +17,6 @@ export default async function Page() {
   const data = await getData();
 
   const result: Feature<Point, PermitInfo>[] = data.results.map((item) => {
-    const geometry = item.geom.geometry as Point;
     return {
       id: item.permitnumber,
       properties: item,
