@@ -20,7 +20,7 @@ export default async function Page() {
     return {
       id: item.permitnumber,
       properties: item,
-      geometry: item.geom.geometry ? item.geom.geometry : { type: "Point", coordinates: [0, 0] },
+      geometry: item.geom ? item.geom.geometry : { type: "Point", coordinates: [0, 0] },
       type: "Feature",
     };
   });
