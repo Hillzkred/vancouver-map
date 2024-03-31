@@ -1,22 +1,14 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import Map, {
-  NavigationControl,
-  Source,
-  Layer,
-  Popup,
-  MapLayerMouseEvent,
-  LngLat,
-  LngLatLike,
-} from "react-map-gl/maplibre";
-import { MouseEvent, createContext, useEffect, useState } from "react";
-import { type FeatureCollection, type Point, Geometry, Feature } from "geojson";
+import Map, { NavigationControl, Source, Layer, Popup, MapLayerMouseEvent } from "react-map-gl/maplibre";
+import { useEffect, useState } from "react";
+import { type FeatureCollection, type Point } from "geojson";
 import { PermitInfo } from "@/types/types";
 import SearchBar from "./components/SearchBar";
 import { PermitLists } from "@/types/types";
 
-function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
+function App({ geoJsonData }: { geoJsonData: FeatureCollection<Point, PermitInfo>[] }) {
   const [cursor, setCursor] = useState("");
   const [permitLists, setPermitLists] = useState<PermitLists>();
   const [popupPermitInfo, setPopupPermitInfo] = useState<{
@@ -28,7 +20,7 @@ function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
   useEffect(() => {
     const permits: Pick<PermitInfo, "applicant" | "permitnumber" | "address">[] = [];
 
-    data.map((item) => {
+    geoJsonData.map((item) => {
       item.features.map((feature) => {
         const { properties } = feature;
 
@@ -55,7 +47,7 @@ function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
   };
 
   const activateSearch = (permitNumber: string) => {
-    const permitFound = data.map((layer) => {
+    const permitFound = geoJsonData.map((layer) => {
       const permitFound = layer.features.find((feature) => {
         return feature.properties.permitnumber === permitNumber;
       });
@@ -90,8 +82,27 @@ function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
         cursor={cursor}
         initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 15, pitch: 60, bearing: -20 }}
         mapStyle={"/map.json"}>
+        {geoJsonData.map((geojson, index) => {
+          return (
+            <Source key={index} id="datasource" data={geojson} type="geojson">
+              <Layer
+                key={index}
+                source="datasource"
+                id="point"
+                type="circle"
+                paint={{
+                  "circle-color": "#ed0024",
+                  "circle-radius": 7,
+                  "circle-stroke-width": 3,
+                  "circle-stroke-color": "cornsilk",
+                  "circle-stroke-opacity": 0.5,
+                }}
+              />
+            </Source>
+          );
+        })}
         <NavigationControl />
-        <SearchBar activateSearch={activateSearch} data={data} permits={permitLists} />
+        <SearchBar activateSearch={activateSearch} data={geoJsonData} permits={permitLists} />
         {showPopup && popupPermitInfo ? (
           <Popup
             closeOnClick={false}
@@ -113,25 +124,6 @@ function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
             </div>
           </Popup>
         ) : null}
-        {data.map((layer, index) => {
-          return (
-            <Source key={index} id="datasource" data={layer} type="geojson">
-              <Layer
-                key={index}
-                source="datasource"
-                id="point"
-                type="circle"
-                paint={{
-                  "circle-color": "#ed0024",
-                  "circle-radius": 7,
-                  "circle-stroke-width": 3,
-                  "circle-stroke-color": "cornsilk",
-                  "circle-stroke-opacity": 0.5,
-                }}
-              />
-            </Source>
-          );
-        })}
       </Map>
     </div>
   );
