@@ -8,7 +8,7 @@ export default function SearchBar({
   permits,
   activateSearch,
 }: {
-  data: FeatureCollection<Geometry, PermitInfo>[];
+  data: FeatureCollection<Geometry, PermitInfo>;
   permits: PermitLists | undefined;
   activateSearch: (permitNumber: string) => void;
 }) {
@@ -19,16 +19,14 @@ export default function SearchBar({
   useEffect(() => {
     let searchedProperty: Feature<Point, PermitInfo> | undefined;
 
-    data.map((d) => {
-      const permitFound = d.features.find(
-        (feature) => feature.properties.permitnumber === permitToShow
-      ) as Feature<Point, PermitInfo>;
+    const permitFound = data.features.find(
+      (feature) => feature.properties.permitnumber === permitToShow
+    ) as Feature<Point, PermitInfo>;
 
-      if (permitFound) {
-        searchedProperty = permitFound;
-        return;
-      }
-    });
+    if (permitFound) {
+      searchedProperty = permitFound;
+      return;
+    }
 
     if (searchedProperty && map) {
       const lng = searchedProperty.geometry.coordinates[0];
@@ -38,7 +36,7 @@ export default function SearchBar({
         zoom: 19,
       });
     }
-  }, [permitToShow]);
+  }, [data, map, permitToShow]);
 
   function filterPermitLists(input: string | undefined) {
     if (permits) {
