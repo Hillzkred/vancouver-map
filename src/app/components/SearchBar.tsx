@@ -6,11 +6,11 @@ import { LngLatLike, useMap } from "react-map-gl/maplibre";
 export default function SearchBar({
   data,
   permits,
-  handleClick,
+  activateSearch,
 }: {
   data: FeatureCollection<Geometry, PermitInfo>[];
   permits: PermitLists | undefined;
-  handleClick: (e: MouseEvent<HTMLButtonElement>) => void;
+  activateSearch: (permitNumber: string) => void;
 }) {
   const [searchInput, setSearchInput] = useState("");
   const [permitToShow, setPermitToShow] = useState("");
@@ -55,14 +55,20 @@ export default function SearchBar({
     }
   }
   const handleActivateSearch = (e: MouseEvent<HTMLButtonElement>) => {
-    setPermitToShow(e.currentTarget.name);
+    const permitNumber = e.currentTarget.name;
+    setPermitToShow(permitNumber);
     setSearchInput("");
+    activateSearch(permitNumber);
   };
 
   const filteredPermits = filterPermitLists(searchInput);
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && filteredPermits && filteredPermits[0]) {
+      const permitNumber = filteredPermits[0].permitnumber;
+
+      console.log(permitNumber);
+      activateSearch(permitNumber);
       setPermitToShow(filteredPermits[0].permitnumber);
       setSearchInput("");
     }

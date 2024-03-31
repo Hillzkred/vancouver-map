@@ -6,7 +6,7 @@ import Map, {
   Source,
   Layer,
   Popup,
-  useMap,
+  MapLayerMouseEvent,
   LngLat,
   LngLatLike,
 } from "react-map-gl/maplibre";
@@ -16,11 +16,11 @@ import { PermitInfo } from "@/types/types";
 import SearchBar from "./components/SearchBar";
 import { PermitLists } from "@/types/types";
 
-function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
+function App({ data }: { data: FeatureCollection<Point, PermitInfo>[] }) {
   const [cursor, setCursor] = useState("");
   const [permitLists, setPermitLists] = useState<PermitLists>();
   const [popupPermitInfo, setPopupPermitInfo] = useState<{
-    coordinates: { lng: number; lat: number };
+    coordinates: { lat: number; lng: number };
     permitInfo: Partial<PermitInfo>;
   }>();
   const [showPopup, setShowPopup] = useState(true);
@@ -43,8 +43,36 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
     setPermitLists(permits);
   }, []);
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    console.log("triggered");
+  const handleMapClick = (e: MapLayerMouseEvent) => {
+    const { features, lngLat } = e;
+    if (features?.length && features[0] && Object.values(features[0].properties).length > 0) {
+      setShowPopup(true);
+      setPopupPermitInfo({
+        permitInfo: features[0].properties,
+        coordinates: lngLat,
+      });
+    }
+  };
+
+  const activateSearch = (permitNumber: string) => {
+    const permitFound = data.map((layer) => {
+      const permitFound = layer.features.find((feature) => {
+        return feature.properties.permitnumber === permitNumber;
+      });
+
+      return permitFound;
+    });
+
+    if (permitFound && permitFound[0] && permitFound[0].properties && permitFound[0].geometry) {
+      setShowPopup(true);
+      setPopupPermitInfo({
+        permitInfo: permitFound[0]?.properties,
+        coordinates: {
+          lat: permitFound[0].geometry.coordinates[1],
+          lng: permitFound[0].geometry.coordinates[0],
+        },
+      });
+    }
     setShowPopup(true);
   };
 
@@ -52,17 +80,7 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
     <div className="h-[100svh] w-[100svw]">
       <Map
         interactiveLayerIds={["point"]}
-        onClick={(e) => {
-          const { features, lngLat } = e;
-          const coordinates = e.lngLat;
-          if (features?.length && features[0] && Object.values(features[0].properties).length > 0) {
-            setShowPopup(true);
-            setPopupPermitInfo({
-              permitInfo: features[0].properties,
-              coordinates: lngLat,
-            });
-          }
-        }}
+        onClick={handleMapClick}
         onMouseLeave={() => {
           setCursor("auto");
         }}
@@ -73,7 +91,7 @@ function App({ data }: { data: FeatureCollection<Geometry, PermitInfo>[] }) {
         initialViewState={{ latitude: 49.2827, longitude: -123.1207, zoom: 15, pitch: 60, bearing: -20 }}
         mapStyle={"/map.json"}>
         <NavigationControl />
-        <SearchBar handleClick={handleClick} data={data} permits={permitLists} />
+        <SearchBar activateSearch={activateSearch} data={data} permits={permitLists} />
         {showPopup && popupPermitInfo ? (
           <Popup
             closeOnClick={false}
