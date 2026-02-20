@@ -5,7 +5,7 @@ import { Feature, FeatureCollection, Geometry, Point } from "geojson";
 
 async function getData() {
   const buildingPermitsData = await fetch(
-    "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100"
+    "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?limit=100",
   );
 
   const res: { results: PermitInfo[] } = await buildingPermitsData.json();
@@ -16,15 +16,20 @@ async function getData() {
 export default async function Page() {
   const data = await getData();
 
-  const result: Feature<Point, PermitInfo>[] = data.results.map((item) => {
-    const geometry = item.geom.geometry as Point;
-    return {
-      id: item.permitnumber,
-      properties: item,
-      geometry: geometry,
-      type: "Feature",
-    };
-  });
+  const result: Feature<Point, PermitInfo>[] = data.results
+    .filter(
+      (item): item is typeof item & { geom: { geometry: Point } } =>
+        item.geom?.geometry != null && item.geom.geometry.type === "Point",
+    )
+    .map((item) => {
+      const geometry = item.geom.geometry as Point;
+      return {
+        id: item.permitnumber,
+        properties: item,
+        geometry: geometry,
+        type: "Feature",
+      };
+    });
   const featureCollection: FeatureCollection<Point, PermitInfo>[] = [
     { type: "FeatureCollection", features: result },
   ];
